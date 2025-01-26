@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Map</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+        }
+        .topbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .topbar .buttons button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            border: none;
+            background-color: #555;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .topbar .buttons button:hover {
+            background-color: #777;
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 50px);
+        }
+        .sidebar {
+            width: 300px;
+            background-color: #f4f4f4;
+            padding: 10px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+        }
+        .map {
+            flex: 1;
+            position: relative;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo">My Map App</div>
+        <div class="buttons">
+            <button>Button 1</button>
+            <button>Button 2</button>
+        </div>
+    </div>
+    <div class="container">
+       
+        <div class="map">
+            <iframe
+                width="100%"
+                height="100%"
+                frameborder="0"
+                scrolling="no"
+                marginheight="0"
+                marginwidth="0"
+                src="https://umap.openstreetmap.fr/en/map/anonymous-edit/1169666:aoiQIDSC8O8zosTYopDMYHzLdwmg_4F1qwQaJJbxHFg"
+                style="border: 1px solid black">
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([0, 0], 2); // Default view
+
+        // Load the map from OpenStreetMap
+        
+        L.tileLayer('https://www.openstreetmap.org/#map=13/-19.88854/-43.95836', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Load and display markers from local JSON file
+        async function loadMarkers(jsonFile) {
+            try {
+                const response = await fetch(jsonFile);
+                const data = await response.json();
+
+                data.markers.forEach(marker => {
+                    const mapMarker = L.marker([marker.lat, marker.lng]).addTo(map);
+
+                    mapMarker.on('click', () => {
+                        document.getElementById('sidebar').innerHTML = `
+                            <h3>${marker.title}</h3>
+                            <p>${marker.description}</p>
+                            <img src="${marker.graph}" alt="Flood Prediction Graph" style="width: 100%; max-width: 250px;" />
+                        `;
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading markers:', error);
+            }
+        }
+
+        // Replace 'local-json-file.json' with the actual JSON file path
+        loadMarkers('./local-data.json');
+    </script>
+
+    <!-- Include Leaflet.js -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</body>
+</html>

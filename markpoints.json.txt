@@ -1,0 +1,18 @@
+{
+    "markers": [
+        {
+            "lat": 51.505,
+            "lng": -0.09,
+            "title": "Sample Point 1",
+            "description": "This is a description of Sample Point 1.",
+            "graph": "./graphs/sample1.png"
+        },
+        {
+            "lat": 48.8566,
+            "lng": 2.3522,
+            "title": "Sample Point 2",
+            "description": "This is a description of Sample Point 2.",
+            "graph": "./graphs/sample2.png"
+        }
+    ]
+}
