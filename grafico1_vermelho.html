@@ -1,45 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gráfico de Nível de Água</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <style>
-        #waterLevelChart {
+        body {
             font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #waterLevelChart {
+            background: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
-            background: white;
-            max-width: 800px;
-            margin: 20px;
+            max-width: 1000px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .legend {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-item .color-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .legend-item .yellow {
+            background-color: #ffa500;
+        }
+        .legend-item .light-red {
+            background-color: #ff6666;
+        }
+        .legend-item .dark-red {
+            background-color: #cc0000;
         }
     </style>
 </head>
 <body>
-    <canvas id="waterLevelChart"></canvas>
+    <div>
+        <h2>Monitoramento e Previsão do Nível de Água</h2>
+        <canvas id="waterLevelChart"></canvas>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="color-box yellow"></div>
+                <span>Aviso</span>
+                <span>150 mm</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box light-red"></div>
+                <span>Perigo</span>
+                <span>300 mm</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box dark-red"></div>
+                <span>Extremo</span>
+                <span>450 mm</span>
+            </div>
+        </div>
+    </div>
 
     <script>
         const ctx = document.getElementById('waterLevelChart').getContext('2d');
+
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['10:00', '11:00', '12:00', 'Agora', '13:00', '14:00', '15:00'],
-                datasets: [{
-                    label: 'Nível da Água (mm)',
-                    data: [50, 180, 320, 400, 480, 550, 620],
-                    borderColor: '#0066ff',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    segment: {
-                        // Linha contínua até "Agora" (índice 3)
-                        borderDash: (ctx) => ctx.p0DataIndex >= 3 ? [5, 5] : [0, 0]
-                    },
-                    pointBackgroundColor: [
-                        '#0066ff', '#0066ff', '#0066ff', 
-                        '#ff0000',  // Destaque para "Agora"
-                        '#0066ff88', '#0066ff88', '#0066ff88' // Previsões (transparência)
-                    ],
-                    pointRadius: 5,
-                }]
+                labels: ['-3h', '-2h', '-1h', 'Agora', '+1h', '+2h', '+3h'],
+                datasets: [
+                    {
+                        label: 'Nível da Água (mm)',
+                        data: [336, 372, 422, 390, 400, 422, 478],
+                        borderColor: '#0066ff',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        segment: {
+                            borderDash: (ctx) => ctx.p0DataIndex >= 3 ? [5, 5] : [0, 0]
+                        },
+                        pointBackgroundColor: [
+                            '#0066ff', '#0066ff', '#0066ff',
+                            '#ff0000', // Destaque para "Agora"
+                            '#ff8800', '#ff8800', '#ff8800' // Previsões
+                        ],
+                        pointRadius: 5,
+                        order: 1 // Garantindo que a linha azul seja desenhada por último
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -52,8 +121,7 @@
                             font: { size: 12 }
                         },
                         grid: {
-                            color: (context) => 
-                                [150, 300, 600].includes(context.tick.value) ? '#ff000033' : '#eee',
+                            color: '#eee',
                         }
                     },
                     x: {
@@ -64,36 +132,70 @@
                 plugins: {
                     annotation: {
                         annotations: {
-                            linha150: {
+                            aviso: {
                                 type: 'line',
                                 yMin: 150,
                                 yMax: 150,
                                 borderColor: '#ffa500',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: { content: 'Baixo (150mm)', position: 'start' }
+                                borderWidth: 5, // Linha mais grossa
+                                label: {
+                                    content: 'Aviso (150mm)',
+                                    enabled: true,
+                                    position: 'end',
+                                    backgroundColor: 'rgba(255, 165, 0, 0.2)',
+                                    color: '#000',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                order: 0 // Desenhar antes da linha azul
                             },
-                            linha300: {
+                            perigo: {
                                 type: 'line',
                                 yMin: 300,
                                 yMax: 300,
-                                borderColor: '#ffa500',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: { content: 'Moderado (300mm)', position: 'start' }
+                                borderColor: '#ff6666',
+                                borderWidth: 5, // Linha mais grossa
+                                label: {
+                                    content: 'Perigo (300mm)',
+                                    enabled: true,
+                                    position: 'end',
+                                    backgroundColor: 'rgba(255, 102, 102, 0.2)',
+                                    color: '#000',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                order: 0 // Desenhar antes da linha azul
                             },
-                            linha600: {
+                            extremo: {
                                 type: 'line',
-                                yMin: 600,
-                                yMax: 600,
-                                borderColor: '#ff0000',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: { content: 'Alto (600mm)', position: 'start' }
+                                yMin: 450,
+                                yMax: 450,
+                                borderColor: '#cc0000',
+                                borderWidth: 5, // Linha mais grossa
+                                label: {
+                                    content: 'Extremo (450mm)',
+                                    enabled: true,
+                                    position: 'end',
+                                    backgroundColor: 'rgba(204, 0, 0, 0.2)',
+                                    color: '#fff',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                order: 0 // Desenhar antes da linha azul
                             }
                         }
                     },
-                    legend: { display: false }
+                    legend: { display: true, position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw} mm`;
+                            }
+                        }
+                    }
                 }
             }
         });
