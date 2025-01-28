@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Map</title>
+    <title>FloodHUB</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #2c3e50, #4ca1af);
+            color: white;
         }
         .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #333;
+            background-color: #1abc9c;
             color: white;
             padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         .topbar .logo {
             font-size: 20px;
@@ -25,98 +28,163 @@
             margin-left: 10px;
             padding: 8px 15px;
             border: none;
-            background-color: #555;
+            background-color: #16a085;
             color: white;
             cursor: pointer;
             border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
         }
         .topbar .buttons button:hover {
-            background-color: #777;
+            background-color: #1abc9c;
+            transform: scale(1.1);
         }
-        .container {
+        .content {
+            padding: 20px;
+            display: none;
+        }
+        .content.active {
+            display: block;
+        }
+        .map-container {
             display: flex;
             height: calc(100vh - 50px);
         }
-        .sidebar {
-            width: 300px;
-            background-color: #f4f4f4;
-            padding: 10px;
-            overflow-y: auto;
-            border-right: 1px solid #ddd;
-        }
-        .map {
-            flex: 1;
-            position: relative;
-        }
-        #map {
+        .map-container iframe {
             width: 100%;
             height: 100%;
+            border: none;
+        }
+        .home-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #2c3e50, #4ca1af);
+        }
+        .home-screen h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+        .home-screen button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .home-screen button:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
     <div class="topbar">
-        <div class="logo">My Map App</div>
+        <div class="logo">Floodhub</div>
         <div class="buttons">
-            <button>Button 1</button>
-            <button>Button 2</button>
+            <button onclick="showPage('home')">Home</button>
+            <button onclick="showPage('quem-somos')">Quem Somos Nós</button>
+            <button onclick="showPage('tecnologias-utilizadas')">Tecnologias Utilizadas</button>
         </div>
     </div>
-    <div class="container">
-       
-        <div class="map">
+
+    <!-- Home Screen -->
+    <div id="home" class="content active">
+        <div class="home-screen">
+            <h1>Carregar Mapa</h1>
+            <button onclick="loadMap()">Iniciar</button>
+        </div>
+    </div>
+
+    <!-- Map Section -->
+    <div id="map-section" class="content">
+        <div class="map-container">
             <iframe
-                width="100%"
-                height="100%"
-                frameborder="0"
-                scrolling="no"
-                marginheight="0"
-                marginwidth="0"
-                src="https://umap.openstreetmap.fr/en/map/previsao-de-alagamentos-mapa_1169666?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=false&searchControl=true&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&captionControl=false&locateControl=false&measureControl=false&editinosmControl=false&starControl=false"></iframe><p><a href="//umap.openstreetmap.fr/en/map/previsao-de-alagamentos-mapa_1169666?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=false&searchControl=true&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&captionControl=false&locateControl=false&measureControl=false&editinosmControl=false&starControl=false"
-                style="border: 1px solid black">
+                src="https://umap.openstreetmap.fr/en/map/previsao-de-alagamentos-mapa_1169666?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=false&searchControl=true&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&captionControl=false&locateControl=false&measureControl=false&editinosmControl=false&starControl=false">
             </iframe>
         </div>
     </div>
 
+    <div id="quem-somos" class="content">
+        <h2>Sobre o Projeto Floodhub</h2>
+        <p>
+        Com o avanço das mudanças climáticas, grandes metrópoles como Belo Horizonte (BH) têm enfrentado desafios cada vez mais graves relacionados a fenômenos climáticos extremos. Um dos problemas mais alarmantes é o aumento da frequência e intensidade de chuvas torrenciais, que resultam em enchentes e alagamentos com graves consequências materiais e humanas. Esses eventos causam prejuízos consideráveis, como danos a propriedades, interrupção de serviços essenciais e, infelizmente, riscos à vida das pessoas.
+        </p>
+    
+        <p>
+        Para enfrentar essa realidade, desenvolvemos o <strong>Floodhub</strong>, uma plataforma inovadora projetada para ajudar a prevenir os impactos negativos das enchentes e facilitar a vida das pessoas que convivem diariamente com esses desafios. Nosso objetivo é criar um futuro mais resiliente e sustentável, mitigando os danos causados pelas inundações e oferecendo uma solução eficiente e acessível para a população de BH.
+        </p>
+    
+        <h3>Por que o Floodhub é Necessário?</h3>
+        <p>
+        As enchentes urbanas representam uma ameaça constante em regiões com infraestrutura de drenagem inadequada e mudanças no padrão de precipitação. Além disso, a impermeabilização do solo nas cidades agrava a situação, reduzindo a capacidade de absorção de água. Em Belo Horizonte, bairros inteiros são frequentemente afetados, com prejuízos financeiros e impactos na saúde pública.
+        </p>
+        <p>
+        O Floodhub busca preencher uma lacuna crítica ao monitorar em tempo real os níveis de água em bueiros, esgotos e bocas de lobo, oferecendo previsões precisas e alertas antecipados. Isso permite que autoridades, empresas e cidadãos tomem decisões informadas e ajam preventivamente para reduzir os danos.
+        </p>
+    
+        <h3>Quem Somos</h3>
+        <p>
+        O Floodhub é fruto do trabalho colaborativo de uma equipe comprometida em fazer a diferença. Somos estudantes e profissionais apaixonados por tecnologia e sustentabilidade, determinados a criar soluções inovadoras para os desafios da sociedade moderna. Conheça os integrantes da nossa equipe:
+        </p>
+        <ul>
+        <li><strong>Arthur Afonso Frade de Aquino:</strong> Especialista em desenvolvimento de plataformas digitais e integração de sistemas.</li>
+        <li><strong>Arthur Soares Higino:</strong> Responsável pela análise de dados e implementação de modelos de inteligência artificial.</li>
+        <li><strong>Caio Rangel Nunes:</strong> Engenheiro focado em sistemas de monitoramento em tempo real.</li>
+        <li><strong>Gabriel Neri Ferreira Santos:</strong> Desenvolvedor com experiência em soluções de IoT (Internet das Coisas).</li>
+        <li><strong>Luís Felipe De Paula Mendes:</strong> Especialista em infraestrutura urbana e gestão de riscos climáticos.</li>
+        <li><strong>Marco Túlio Siqueira da Mata:</strong> Pesquisador em mudanças climáticas e mitigação de impactos ambientais.</li>
+        <li><strong>Matheus Nemer Resende Temponi:</strong> Desenvolvedor focado em algoritmos para previsão de enchentes.</li>
+        <li><strong>Natan Rodrigues Rocha:</strong> Responsável pela integração entre sensores e a plataforma Floodhub.</li>
+        </ul>
+    
+        <h3>Nosso Compromisso</h3>
+        <p>
+        Estamos dedicados a criar uma solução que contribua para um futuro mais seguro e sustentável em Belo Horizonte. O Floodhub é mais do que uma plataforma tecnológica; é um esforço conjunto para proteger vidas, reduzir prejuízos e fortalecer a resiliência urbana diante das mudanças climáticas. Juntos, acreditamos que podemos fazer a diferença e construir uma cidade mais preparada para os desafios do amanhã.
+        </p>
+    </div>
+    <div id="tecnologias-utilizadas" class="content">
+        <h2>Tecnologias Utilizadas</h2>
+        <p>
+        No projeto, utilizamos tecnologias avançadas de Inteligência Artificial para coletar e analisar dados de sensores instalados em bueiros, esgotos e bocas de lobo. Essas tecnologias nos permitem monitorar os níveis de água e prever possíveis alagamentos em milímetros com base em dados históricos, sem a necessidade de informações meteorológicas externas. 
+        </p>
+    
+        <h3>Modelo de IA Empregado</h3>
+        <p>
+        A previsão dos níveis de água futuros é realizada utilizando <strong>Redes Neurais Recorrentes (RNNs)</strong> e modelos de última geração como o <strong>Temporal Fusion Transformer (TFT)</strong>. Esses modelos são projetados para lidar com séries temporais, permitindo identificar padrões temporais e espaciais nos dados coletados pelos sensores. Com isso, é possível realizar previsões precisas e em tempo real.
+        </p>
+    
+        <h3>Vantagens do Modelo</h3>
+        <ul>
+        <li><strong>Precisão:</strong> Alta capacidade de análise de padrões complexos nos dados dos sensores.</li>
+        <li><strong>Autossuficiência:</strong> Não dependemos de dados meteorológicos externos, pois a análise é baseada exclusivamente nos sensores instalados.</li>
+        <li><strong>Escalabilidade:</strong> O sistema pode ser expandido para incluir mais sensores e abranger áreas maiores sem perda de desempenho.</li>
+        </ul>
+    
+        <h3>Processo de Coleta e Análise</h3>
+        <p>
+        Os sensores instalados em pontos estratégicos da região coletam dados em tempo real, incluindo informações como a taxa de enchimento e o fluxo de água nos bueiros. Esses dados são armazenados e analisados por um sistema inteligente, que os transforma em gráficos históricos. A partir disso, o modelo de IA é capaz de prever possíveis alagamentos futuros com base nas características dos bueiros e no comportamento detectado em sensores vizinhos.
+        </p>
+    </div>
+
+      
     <script>
-        // Initialize the map
-        const map = L.map('map').setView([0, 0], 2); // Default view
-
-        // Load the map from OpenStreetMap
-        
-        L.tileLayer('https://www.openstreetmap.org/#map=13/-19.88854/-43.95836', {
-            maxZoom: 18,
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Load and display markers from local JSON file
-        async function loadMarkers(jsonFile) {
-            try {
-                const response = await fetch(jsonFile);
-                const data = await response.json();
-
-                data.markers.forEach(marker => {
-                    const mapMarker = L.marker([marker.lat, marker.lng]).addTo(map);
-
-                    mapMarker.on('click', () => {
-                        document.getElementById('sidebar').innerHTML = `
-                            <h3>${marker.title}</h3>
-                            <p>${marker.description}</p>
-                            <img src="${marker.graph}" alt="Flood Prediction Graph" style="width: 100%; max-width: 250px;" />
-                        `;
-                    });
-                });
-            } catch (error) {
-                console.error('Error loading markers:', error);
-            }
+        function showPage(pageId) {
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
         }
 
-        // Replace 'local-json-file.json' with the actual JSON file path
-        loadMarkers('./local-data.json');
+        function loadMap() {
+            showPage('map-section');
+        }
     </script>
-
-    <!-- Include Leaflet.js -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </body>
 </html>
