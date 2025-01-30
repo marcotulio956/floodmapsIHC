@@ -48,6 +48,7 @@
         .map-container {
             display: flex;
             height: calc(100vh - 50px);
+            position: relative;
         }
         .map-container iframe {
             width: 100%;
@@ -82,13 +83,63 @@
             background-color: #2980b9;
             transform: scale(1.1);
         }
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            color: #333;
+            display: none;
+        }
+        .legend h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .legend-label {
+            font-size: 14px;
+        }
+        .microphone-button {
+            position: absolute;
+            top: 212px; /* Posicionado abaixo da lupa */
+            left: 2.68%; 
+            transform: translateX(-50%); /* Centraliza o botão */
+            background-color: white; /* Fundo branco */
+            border: 0.0001px solid rgb(170, 170, 170); /* Contorno preto */
+            border-radius: 2px; /* Bordas arredondadas suaves */
+            padding: 3.75px; /* Reduzir o padding para diminuir o espaço em volta do ícone */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            cursor: pointer;
+            z-index: 1000; /* Garante que fique acima do mapa */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .microphone-button svg {
+            width: 30px;
+            height: 30px;
+            fill: #333; /* Cor do ícone */
+        }
     </style>
 </head>
 <body>
     <div class="topbar">
         <div class="logo">Floodhub</div>
         <div class="buttons">
-            <button onclick="showPage('home')">Home</button>
+            <button onclick="showPage('home')">Página Inicial</button>
             <button onclick="showPage('quem-somos')">Quem Somos Nós</button>
             <button onclick="showPage('tecnologias-utilizadas')">Tecnologias Utilizadas</button>
         </div>
@@ -108,6 +159,32 @@
             <iframe
                 src="https://umap.openstreetmap.fr/en/map/previsao-de-alagamentos-mapa_1169666?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=false&searchControl=true&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&captionControl=false&locateControl=false&measureControl=false&editinosmControl=false&starControl=false">
             </iframe>
+        </div>
+        <!-- Botão do microfone (não funcional) -->
+        <button id="microphone-button" class="microphone-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+            </svg>
+        </button>
+        <!-- Legenda -->
+        <div id="legend" class="legend">
+            <h3>Legenda:</h3>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: rgba(138, 138, 138, 0.466);"></span>
+                <span class="legend-label">Sensor Ativo</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: green;"></span>
+                <span class="legend-label">Risco Baixo</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: yellow;"></span>
+                <span class="legend-label">Risco Médio</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: red;"></span>
+                <span class="legend-label">Risco Alto</span>
+            </div>
         </div>
     </div>
 
@@ -173,13 +250,19 @@
         </p>
     </div>
 
-      
     <script>
         function showPage(pageId) {
             document.querySelectorAll('.content').forEach(content => {
                 content.classList.remove('active');
             });
             document.getElementById(pageId).classList.add('active');
+
+            // Mostrar ou ocultar a legenda
+            if (pageId === 'map-section') {
+                document.getElementById('legend').style.display = 'block';
+            } else {
+                document.getElementById('legend').style.display = 'none';
+            }
         }
 
         function loadMap() {
