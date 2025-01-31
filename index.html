@@ -42,6 +42,73 @@
             padding: 20px;
             display: none;
         }
+        .intro-container {
+            max-width: 600px;
+            height: 100%;
+            margin: 40px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .intro-container button {
+            background-color: #16a085;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .popup input, .popup button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .popup button {
+            background-color: #16a085;
+            color: white;
+            border: none;
+        }
+        .popup button:hover {
+            background-color: #1abc9c;
+        }
+        .popup .cancel-button {
+            background-color: red;
+        }
+        .popup .cancel-button:hover {
+            background-color: darkred;
+        }
+        .upload-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .upload-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #16a085;
+            transition: color 0.3s;
+        }
+        .upload-icon:hover {
+            color: #1abc9c;
+        }
+        .intro-container button:hover {
+            background-color: #1abc9c;
+        }
         .content.active {
             display: block;
         }
@@ -133,6 +200,13 @@
             height: 30px;
             fill: #333; /* Cor do ícone */
         }
+        #adicionefotos {text-align: center;}
+        #suggestions { 
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #2c3e50, #4ca1af);
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -142,6 +216,7 @@
             <button onclick="showPage('home')">Página Inicial</button>
             <button onclick="showPage('quem-somos')">Quem Somos Nós</button>
             <button onclick="showPage('tecnologias-utilizadas')">Tecnologias Utilizadas</button>
+            <button onclick="showPage('suggestions')">Faça sua Sugestão</button>
         </div>
     </div>
 
@@ -152,6 +227,31 @@
             <button onclick="loadMap()">Iniciar</button>
         </div>
     </div>
+
+    <div id="suggestions" class="content">
+        <div class="intro-container">
+            <h2>Ajude a Melhorar Nossas Previsões</h2>
+            <p>Você pode contribuir sugerindo locais para novos sensores. Com mais pontos de monitoramento, podemos prever enchentes com maior precisão e proteger mais pessoas.</p>
+            <button onclick="openPopup()">Abrir Cadastro</button>
+        </div>
+    </div>
+
+    <div id="popup" class="popup" text-align: center>
+        <h2>Faça sua Sugestão</h2>
+        <input type="text" id="name" placeholder="Nome" required>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="text" id="cpf" placeholder="CPF" required>
+        <input type="text" id="residency" placeholder="Local de Residência" required>
+        <input type="text" id="suggested-location" placeholder="Local para o Sensor" required>
+        <div class="upload-container">
+            <label for="upload-photo" class="upload-icon">📷</label>
+            <input type="file" id="upload-photo" accept="image/*" style="display: none;" placeholder="Adicione Imagens">
+        </div>
+        <p id="adicionefotos">Adicione Fotos</p>
+        <button onclick="submitSuggestion()">Cadastrar Sugestão</button>
+        <button class="cancel-button" onclick="closePopup()">Cancelar</button>
+    </div>
+
 
     <!-- Map Section -->
     <div id="map-section" class="content">
@@ -268,6 +368,31 @@
         function loadMap() {
             showPage('map-section');
         }
+
+        function openPopup() {
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function submitSuggestion() {
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let cpf = document.getElementById('cpf').value;
+            let residency = document.getElementById('residency').value;
+            let suggestedLocation = document.getElementById('suggested-location').value;
+            
+            if (name && email && cpf && residency && suggestedLocation) {
+                alert('Sugestão enviada com sucesso!');
+                document.querySelectorAll('.popup input').forEach(input => input.value = '');
+                closePopup();
+            } else {
+                alert('Por favor, preencha todos os campos!');
+            }
+        }
+
     </script>
 </body>
 </html>
